@@ -1,3 +1,5 @@
+// Task1
+
 import java.awt.*;
 
 public class MyRectangle extends MyDrawing {

@@ -1,3 +1,5 @@
+// Task1 課題1
+
 import java.awt.*;
 
 public class MyOval extends MyDrawing {
