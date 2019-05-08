@@ -9,7 +9,7 @@ public class MyCanvas extends JPanel {
 
     public MyCanvas() {
         setBackground(Color.white);
-        drawings = new Vector<MyDrawing>();
+        drawings = new Vector<>();
     }
 
     public void paint(Graphics g) {

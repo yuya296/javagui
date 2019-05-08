@@ -5,6 +5,9 @@ import java.awt.*;
 public class MyOval extends MyDrawing {
 
     // 長方形とは違い、中心の座標を引数に取ることにする。
+    public MyOval(int xpt, int ypt) {
+        this(xpt, ypt, 40, 40);
+    }
     public MyOval(int xpt, int ypt, int wpt, int hpt) {
         super(xpt - wpt/2, ypt - hpt/2);
         setSize(wpt, hpt);

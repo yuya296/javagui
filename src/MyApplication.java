@@ -1,46 +1,59 @@
-// Task1
+// task2-8
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class MyApplication extends JFrame {
+    private StateManager stateManager;
+    private MyCanvas canvas;
+
     public MyApplication() {
-        super("My Painter");
+        super("My Paint Application");
+
+        canvas = new MyCanvas();
+        canvas.setBackground(Color.white);
 
         JPanel jp = new JPanel();
-        jp.setLayout(new BorderLayout());
-        this.getContentPane().add(jp);
+        jp.setLayout(new FlowLayout());
 
-        MyCanvas canvas = new MyCanvas();
-        jp.add(canvas, BorderLayout.CENTER);
+        stateManager = new StateManager(canvas);
 
+        RectButton rectButton = new RectButton(stateManager);
+        jp.add(rectButton);
 
-        // ======
-        MyRectangle mr = new MyRectangle(20, 20);
-        mr.setLineWidth(8);
-        mr.setStrokeRound();
-        canvas.addDrawing(mr);
-        canvas.addDrawing(new MyRectangle(80, 80).setStrokeBroken(4));
+        OvalButton ovalButton = new OvalButton(stateManager);
+        jp.add(ovalButton);
 
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(jp, BorderLayout.NORTH);
+        getContentPane().add(canvas, BorderLayout.CENTER);
 
-        // =======
+        canvas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                stateManager.mouseDown(e.getX(), e.getY());
+            }
+        });
 
-        /* WindowListener */
-        this.addWindowListener(
-                new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        System.exit(1);
-                    }
-                }
-        );
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(300, 400);
     }
 
     public static void main(String[] args) {
         MyApplication app = new MyApplication();
-        app.setSize(400, 300);
+        app.pack();
         app.setVisible(true);
     }
 }
