@@ -14,7 +14,9 @@ public class MyPolygonal extends MyDrawing {
     public MyPolygonal(int xpt, int ypt) {
         this(xpt, ypt, 40, 40, 5);
     }
-
+    public MyPolygonal(int xpt, int ypt, int wpt, int hpt) {
+        this(xpt, ypt, wpt, hpt, 5);
+    }
     public MyPolygonal(int xpt, int ypt, int wpt, int hpt, int n) {
         super(xpt, ypt);
         setSize(wpt, hpt);
@@ -174,7 +176,7 @@ class PolygonalState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
-        stateManager.addDrawing(drawing = new MyPolygonal(x, y, 0, 0, 5));
+        stateManager.addDrawing(drawing = new MyPolygonal(x, y, 0, 0));
     }
 
     @Override

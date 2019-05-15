@@ -1,0 +1,5 @@
+    @Override
+    public void mouseDrag(int x, int y) {
+        MyDrawing d = stateManager.getDrawing();
+        d.setSize(d.getX() - x, d.getY() - y);
+    }

@@ -1,0 +1,18 @@
+class StarButton extends JButton {
+    StateManager stateManager;
+
+    public StarButton(StateManager stateManager) {
+        super("Star");
+
+        addActionListener(new StarListener());
+
+        this.stateManager = stateManager;
+    }
+
+    class StarListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stateManager.setState(new StarState(stateManager));
+        }
+    }
+}

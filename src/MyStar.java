@@ -10,8 +10,11 @@ public class MyStar extends MyPolygonal {
     public MyStar(int xpt, int ypt) {
         this(xpt, ypt, 40, 40, 5, 0.5);
     }
+    public MyStar(int xpt, int ypt, int wpt, int hpt) {
+        this(xpt, ypt, wpt, hpt, 5, 0.5);
+    }
     public MyStar(int xpt, int ypt, int wpt, int hpt, int n, double scale) {
-        super(xpt, ypt, wpt, hpt, 2*n);
+        super(xpt, ypt, -wpt, -hpt, 2*n);
         setScale(scale);
         setPoints(new double[n], new double[n]);
     }
@@ -97,7 +100,7 @@ class StarState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
-        stateManager.addDrawing(drawing = new MyStar(x, y, 0, 0, 5, 0.5));
+        stateManager.addDrawing(drawing = new MyStar(x, y, 0, 0));
     }
 
     @Override
@@ -105,7 +108,6 @@ class StarState implements State {
 
     @Override
     public void mouseDrag(int x, int y) {
-        System.out.println("StarButton.mouseDrag");
         MyDrawing d = stateManager.getDrawing();
         d.setSize(d.getX() - x, d.getY() - y);
     }

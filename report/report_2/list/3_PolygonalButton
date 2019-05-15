@@ -1,0 +1,16 @@
+class PolygonalButton extends JButton {
+    StateManager stateManager;
+
+    public PolygonalButton(StateManager stateManager) {
+        super("Polygonal");
+        addActionListener(new PolygonalListener());
+        this.stateManager = stateManager;
+    }
+
+    class PolygonalListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stateManager.setState(new PolygonalState(stateManager));
+        }
+    }
+}

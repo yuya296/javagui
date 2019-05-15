@@ -70,7 +70,7 @@ public class MyApplication extends JFrame {
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(300, 400);
+        return new Dimension(600, 800);
     }
 
     public static void main(String[] args) {
