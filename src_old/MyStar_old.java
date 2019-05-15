@@ -1,16 +1,10 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-
-/* MyStar */
-public class MyStar extends MyPolygonal {
+public class MyStar_old extends MyPolygonal {
     private double scale;
 
-    public MyStar(int xpt, int ypt) {
+    public MyStar_old(int xpt, int ypt) {
         this(xpt, ypt, 40, 40, 5, 0.5);
     }
-    public MyStar(int xpt, int ypt, int wpt, int hpt, int n, double scale) {
+    public MyStar_old(int xpt, int ypt, int wpt, int hpt, int n, double scale) {
         super(xpt, ypt, wpt, hpt, 2*n);
         setScale(scale);
         setPoints(new double[n], new double[n]);
@@ -64,49 +58,4 @@ public class MyStar extends MyPolygonal {
         setPoints(xpts, ypts);
     }
 
-}
-
-/* StarButton */
-class StarButton extends JButton {
-    StateManager stateManager;
-
-    public StarButton(StateManager stateManager) {
-        super("Star");
-
-        addActionListener(new StarListener());
-
-        this.stateManager = stateManager;
-    }
-
-    class StarListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            stateManager.setState(new StarState(stateManager));
-        }
-    }
-}
-
-/* StarState */
-class StarState implements State {
-    StateManager stateManager;
-    MyDrawing drawing;
-
-    public StarState(StateManager stateManager) {
-        this.stateManager = stateManager;
-    }
-
-    @Override
-    public void mouseDown(int x, int y) {
-        stateManager.addDrawing(drawing = new MyStar(x, y, 0, 0, 5, 0.5));
-    }
-
-    @Override
-    public void mouseUp(int x, int y) {}
-
-    @Override
-    public void mouseDrag(int x, int y) {
-        System.out.println("StarButton.mouseDrag");
-        MyDrawing d = stateManager.getDrawing();
-        d.setSize(d.getX() - x, d.getY() - y);
-    }
 }

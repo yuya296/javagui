@@ -2,27 +2,19 @@
 
 import java.awt.*;
 
-public class MyDrawing  {
+public class MyDrawing {
     private int x, y, w, h;
     private Color lineColor, fillColor;
     private int lineWidth;
-    private int strokeCap, strokeJoin;
-    private float miterlimit;
-    private float[] dashArray;
-    private float dash_phase;
+    private boolean isDashed = false;   // 破線かどうか
 
-
+    // Constructor
     public MyDrawing(int x, int y, int w, int h, Color lineColor, Color fillColor, int lineWidth) {
         setLocation(x, y);
         setSize(w, h);
         setLineColor(lineColor);
         setFillColor(fillColor);
         setLineWidth(lineWidth);
-        setStrokeCap(BasicStroke.CAP_SQUARE);
-        setStrokeJoin(BasicStroke.JOIN_MITER);
-        setMiterlimit(1.0f);
-        setDashArray(null);
-        setDash_phase(0);
     }
     public MyDrawing(int x, int y, Color lineColor, Color fillColor, int lineWidth) {
         this(x, y, 40, 40, lineColor, fillColor, lineWidth);
@@ -34,8 +26,10 @@ public class MyDrawing  {
         this(0, 0, 40, 40, Color.black, Color.white, 1);
     }
 
+
     public void draw(Graphics g){}
 
+    // 場所の移動
     public void move(int dx, int dy) {
         this.x += dx;
         this.y += dy;
@@ -51,6 +45,13 @@ public class MyDrawing  {
     }
     public int getY() {
         return this.y;
+    }
+    // 図形の中心座標
+    public int getCenterX() {
+        return getX() - getW() / 2;
+    }
+    public int getCenterY() {
+        return getY() - getH() / 2;
     }
 
     // 大きさ: int w, h
@@ -89,84 +90,15 @@ public class MyDrawing  {
         this.lineWidth = lineWidth;
     }
 
-    // 両端の形: strokeCap
-    public void setStrokeCap(int strokeCap) {
-        this.strokeCap = strokeCap;
-    }
-    public int getStrokeCap() {
-        return strokeCap;
+
+    // 破線状態の切り替え
+    public void setDashed(boolean dashed) {
+        isDashed = dashed;
     }
 
-    // 先の接合部: strokeJoin
-    public void setStrokeJoin(int strokeJoin) {
-        this.strokeJoin = strokeJoin;
-    }
-    public int getStrokeJoin() {
-        return strokeJoin;
+    // 破線状態の取得
+    public boolean isDashed() {
+        return isDashed;
     }
 
-    // 接合トリミング制限値: miterlimit
-    public void setMiterlimit(float miterlimit) {
-        this.miterlimit = miterlimit;
-    }
-    public float getMiterlimit() {
-        return miterlimit;
-    }
-
-    public BasicStroke getStroke() {
-        return new BasicStroke(lineWidth, strokeCap, strokeJoin, miterlimit, dashArray, dash_phase);
-    }
-
-    // 破線パターンの配列: dashArray
-    public void setDashArray(int i) {
-        float[] arr = {(float)i};
-        setDashArray(arr);
-    }
-    public void setDashArray(float[] dashArray) {
-        this.dashArray = dashArray;
-    }
-    public float[] getDashArray() {
-        return dashArray;
-    }
-
-    // 破線の開始位置: dash_phase
-    public void setDash_phase(float dash_phase) {
-        this.dash_phase = dash_phase;
-    }
-    public float getDash_phase() {
-        return dash_phase;
-    }
-
-
-// ===
-
-    // 線を破線にする
-    public MyDrawing setStrokeBroken(int width) {
-        setDashArray(width);
-        return this;
-    }
-    public MyDrawing setStrokeBroken() {
-        setStrokeBroken(6);
-        return this;
-    }
-
-    // 線を実線にする
-    public MyDrawing setStrokeSolid() {
-        setDashArray(null);
-        return this;
-    }
-
-    // 角付きの線にする
-    public MyDrawing setStrokeSquare() {
-        setStrokeCap(BasicStroke.CAP_SQUARE);
-        setStrokeJoin(BasicStroke.JOIN_MITER);
-        return this;
-    }
-
-    // 丸角の線にする
-    public MyDrawing setStrokeRound() {
-        setStrokeCap(BasicStroke.CAP_ROUND);
-        setStrokeJoin(BasicStroke.JOIN_ROUND);
-        return this;
-    }
 }

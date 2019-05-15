@@ -2,7 +2,7 @@
 
 import java.awt.*;
 
-public class MyHendecagonal extends MyPolygonal {
+public class MyHendecagonal extends MyPolygonal_old {
     public MyHendecagonal(int xpt, int ypt, int size) {
         super(xpt, ypt, size, 11);
     }

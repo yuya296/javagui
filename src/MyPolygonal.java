@@ -1,43 +1,59 @@
-// Task1 課題1
-
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+
+/* MyPolygonal */
 public class MyPolygonal extends MyDrawing {
-    private int size;       // 中心から各頂点までの長さ
-    private int n;          // n角形 であることを表す
-    private double[] xPoints, yPoints;  // 点を格納する配列, double型なのでint型にキャストして使うこと.
+    private int n;  // n角形であることを表す
+    private int r;  // 中心から各頂点までの長さ
 
-    public MyPolygonal(int xpt, int ypt, int size, int n, Color lineColor, Color fillColor, int lineWidth) {
-        this(xpt, ypt, size, n);
-        setLineColor(lineColor);
-        setFillColor(fillColor);
-        setLineWidth(lineWidth);
+    private double[] xPoints, yPoints;  // 座標を格納する配列
+
+    public MyPolygonal(int xpt, int ypt) {
+        this(xpt, ypt, 40, 40, 5);
     }
-    public MyPolygonal(int xpt, int ypt, int size, int n) {
+
+    public MyPolygonal(int xpt, int ypt, int wpt, int hpt, int n) {
         super(xpt, ypt);
-        setSize(size);
+        setSize(wpt, hpt);
         setN(n);
         setPoints(new double[n], new double[n]);
-        calc();
     }
 
-    // この多角形の座標を計算する
-    private void calc() {
-        double x = (double)getX();
-        double y = (double)getY();
-        double size = (double)getSize();
+    public void setN(int n) {
+        this.n = n;
+    }
+    public void setR(int r) {
+        this.r = r;
+    }
+    public int getN() {
+        return n;
+    }
+    public int getR() {
+        return r;
+    }
+    public void setPoints(double x[], double y[]) {
+        this.xPoints = x;
+        this.yPoints = y;
+    }
 
+    public void calc() {
         double theta = 2 * Math.PI / (double)n;
         double sin = Math.sin(theta);
         double cos = Math.cos(theta);
 
-        xPoints[0] = 0.0;
-        yPoints[0] = -size;
+        double[] xpts = new double[getN()];
+        double[] ypts = new double[getN()];
+
+        xpts[0] = 0;
+        ypts[0] = -1;
 
         try {
             for (int i = 1; i < n; i++) {
-                xPoints[i] = cos * xPoints[i-1] - sin * yPoints[i-1];
-                yPoints[i] = sin * xPoints[i-1] + cos * yPoints[i-1];
+                xpts[i] = cos * xpts[i-1] - sin * ypts[i-1];
+                ypts[i] = sin * xpts[i-1] + cos * ypts[i-1];
             }
         } catch (IndexOutOfBoundsException e) {
             System.out.print("IndexOutOfBoundsException at calc");
@@ -45,74 +61,132 @@ public class MyPolygonal extends MyDrawing {
         }
 
         for (int i = 0; i < n; i++) {
-            xPoints[i] += x;
-            yPoints[i] += y;
+            xpts[i] = xpts[i] * getW() / 2 + getX() + getW() / 2;
+            ypts[i] = ypts[i] * getH() / 2 + getY() + getH() / 2;
         }
+
+        setPoints(xpts, ypts);
     }
 
     public void rotate(double rad) {
-        double theta = rad;
-        double sin = Math.sin(theta);
-        double cos = Math.cos(theta);
-        int x0 = getX();
-        int y0 = getY();
+        double sin = Math.sin(rad);
+        double cos = Math.cos(rad);
+        int x0 = getCenterX();
+        int y0 = getCenterY();
+
+        double[] xpts = getXPoints();
+        double[] ypts = getYPoints();
 
         double tempX, tempY;
 
-        for (int i = 0; i < this.n; i++) {
-            tempX = xPoints[i] - x0;
-            tempY = yPoints[i] - y0;
-            xPoints[i] = cos * tempX - sin * tempY + x0;
-            yPoints[i] = sin * tempX + cos * tempY + y0;
+        for (int i = 0; i < getN(); i++) {
+            // 図形の中心を原点に平行移動したものを仮の変数に保存
+            tempX = xpts[i] - x0;
+            tempY = ypts[i] - y0;
 
+            // 原点中心に回転、もとの位置に平行移動させたものを新たな値として保存
+            xpts[i] = cos * tempX - sin * tempY + x0;
+            ypts[i] = sin * tempX + cos * tempY + y0;
         }
+
+        setPoints(xpts, ypts);
     }
 
-    private static int[] castedCopy(double[] arr) {
-        int[] newArr = new int[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            newArr[i] = (int)arr[i];
-        }
-        return newArr;
-    }
-
-    public void setPoints(double[] xPoints, double[] yPoints) {
-        this.xPoints = xPoints;
-        this.yPoints = yPoints;
-    }
+    // 位置配列をdouble型で返す deep copy
     public double[] getXPoints() {
-        return xPoints;
+        double[] rtn = new double[getN()];
+        for (int i = 0; i < getN(); i++) {
+            rtn[i] = xPoints[i];
+        }
+        return rtn;
     }
     public double[] getYPoints() {
-        return yPoints;
+        double[] rtn = new double[getN()];
+        for (int i = 0; i < getN(); i++) {
+            rtn[i] = yPoints[i];
+        }
+        return rtn;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    // 位置配列をint型で返す deep copy
+    public int[] getXPointsInt() {
+        int[] rtn = new int[getN()];
+        for (int i = 0; i < getN(); i++) {
+            rtn[i] = (int)xPoints[i];
+        }
+        return rtn;
     }
-    public int getSize() {
-        return this.size;
+    public int[] getYPointsInt() {
+        int[] rtn = new int[getN()];
+        for (int i = 0; i < getN(); i++) {
+            rtn[i] = (int)yPoints[i];
+        }
+        return rtn;
     }
-
-    public void setN(int n) {
-        this.n = n;
-    }
-    public int getN() {
-        return this.n;
-    }
-
-
 
     public void draw(Graphics g) {
+        calc();
 
-        int[] xPointsInt = castedCopy(xPoints);
-        int[] yPointsInt = castedCopy(yPoints);
+        int[] xPointsInt = getXPointsInt();
+        int[] yPointsInt = getYPointsInt();
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(getLineWidth()));
+        if (isDashed())
+            g2.setStroke(new MyDashStroke(getLineWidth()));
+        else
+            g2.setStroke(new BasicStroke(getLineWidth()));
         g2.setColor(getFillColor());
         g2.fillPolygon(xPointsInt, yPointsInt, n);
         g2.setColor(getLineColor());
         g2.drawPolygon(xPointsInt, yPointsInt, n);
     }
+
 }
+
+
+/* PolygonalButton */
+class PolygonalButton extends JButton {
+    StateManager stateManager;
+
+    public PolygonalButton(StateManager stateManager) {
+        super("Polygonal");
+        addActionListener(new PolygonalListener());
+        this.stateManager = stateManager;
+    }
+
+    class PolygonalListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stateManager.setState(new PolygonalState(stateManager));
+        }
+    }
+}
+
+
+/* PolygonalState */
+class PolygonalState implements State {
+    StateManager stateManager;
+    MyDrawing drawing;
+
+    public PolygonalState(StateManager stateManager) {
+        this.stateManager = stateManager;
+    }
+
+    @Override
+    public void mouseDown(int x, int y) {
+        stateManager.addDrawing(drawing = new MyPolygonal(x, y, 0, 0, 5));
+    }
+
+    @Override
+    public void mouseUp(int x, int y) {
+        stateManager.setState(null);
+    }
+
+    @Override
+    public void mouseDrag(int x, int y) {
+        MyDrawing d = stateManager.getDrawing();
+        d.setSize(x - d.getX(), y - d.getY());
+    }
+}
+
+
