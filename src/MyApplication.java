@@ -95,44 +95,15 @@ public class MyApplication extends JFrame {
         lineNumber.setPreferredSize(new Dimension(40, 20));
         lineNumber.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                stateManager.setLineNumber((int)lineNumber.getValue());
-            }
-        });
+    public void stateChanged(ChangeEvent e) {
+        stateManager.setLineNumber((int)lineNumber.getValue());
+    }
+});
         jp2.add(lineNumber);
         jp2.add(new JLabel("lines"));
 
 
-        // 色の選択
-//        String[] colorsName = {"Black", "Red", "Blue", "Green", "White", "More..."};
-//        Color[] colors = {Color.black, Color.red, Color.blue, Color.green, Color.white, null};
-//
-//        JComboBox lineColor = new JComboBox(colorsName);
-//        lineColor.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                Color c = colors[lineColor.getSelectedIndex()];
-//                if (c == null) c = JColorChooser.showDialog(null, "JColorChooser", Color.BLACK);
-//                stateManager.setLineColor(c);
-//            }
-//        });
-//        jp3.add(lineColor);
-//
-//        JComboBox fillColor = new JComboBox(colorsName);
-//        fillColor.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                Color c = colors[fillColor.getSelectedIndex()];
-//                if (c == null) c = JColorChooser.showDialog(null, "JColorChooser", Color.WHITE);
-//                stateManager.setFillColor(c);
-//            }
-//
-//            private Color moreColor() {
-//                Color c = JColorChooser.showDialog(null, "Color Chooser", Color.WHITE);
-//
-//            }
-//        });
-//        jp3.add(fillColor);
+        // 色の追加
         ColorPanel colorPanel = new ColorPanel(stateManager, mediator);
         colorPanel.setLayout(new FlowLayout());
 
@@ -140,9 +111,9 @@ public class MyApplication extends JFrame {
         jp3.add(new CutButton(mediator));
         jp3.add(new CopyButton(mediator));
         jp3.add(new PasteButton(mediator));
+        jp3.add(new DeleteButton(mediator));
 
         jp3.add(colorPanel);
-
 
 
         // Layout

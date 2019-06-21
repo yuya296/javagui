@@ -15,7 +15,7 @@ public class PasteButton extends JButton {
         @Override
         public void actionPerformed(ActionEvent e) {
             MyDrawing d = mediator.selectedDrawing;
-            mediator.paste(d.getX() + 40, d.getY() + 40);
+            mediator.paste(d.getX()/* + 40*/, d.getY()/* + 40*/);
         }
     }
 }
@@ -50,6 +50,23 @@ class CopyButton extends JButton {
         @Override
         public void actionPerformed(ActionEvent e) {
             mediator.copy();
+        }
+    }
+}
+
+class DeleteButton extends JButton {
+    Mediator mediator;
+
+    public DeleteButton(Mediator mediator) {
+        super("Delete");
+        addActionListener(new CopyListener());
+        this.mediator = mediator;
+    }
+
+    class CopyListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mediator.removeDrawing();
         }
     }
 }

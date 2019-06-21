@@ -27,7 +27,7 @@ public class MyDrawing {
         setLineWidth(lineWidth);
         setLineNumber(lineNumber);
         setDashArray(dashArray);
-        setHasShade(hasShade);
+        setShade(hasShade);
     }
     public MyDrawing(int x, int y, int w, int h, Color lineColor, Color fillColor, int lineWidth) {
         this(x, y, w, h, lineColor, fillColor, lineWidth, 1, null, false);
@@ -175,7 +175,7 @@ public class MyDrawing {
     public boolean hasShade() {
         return hasShade;
     }
-    public void setHasShade(boolean b) {
+    public void setShade(boolean b) {
         this.hasShade = b;
     }
 

@@ -88,8 +88,8 @@ public class Mediator {
 
     public boolean paste(int x, int y) {
         try {
+            buffer.move(20, 20);
             MyDrawing clone = buffer.clone();
-            clone.setLocation(x, y);
             addDrawing(clone);
             repaint();
             return true;
@@ -109,7 +109,7 @@ public class Mediator {
     }
     // 影の有無
     public void setShade(boolean hasShade) {
-        selectedDrawing.setHasShade(hasShade);
+        selectedDrawing.setShade(hasShade);
         repaint();
     }
     // 破線パターン
