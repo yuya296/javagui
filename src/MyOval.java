@@ -133,7 +133,7 @@ class OvalButton extends JButton {
     StateManager stateManager;
 
     public OvalButton(StateManager stateManager) {
-        super("Oval");
+        super(new ImageIcon("./img/oval.png"));
 
         addActionListener(new OvalListener());
 
@@ -158,6 +158,7 @@ class OvalState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
+        stateManager.unSelectAll();
         stateManager.addDrawing(
                 drawing = new MyOval(x, y, 0, 0, stateManager.getLineColor(),
                         stateManager.getFillColor(), stateManager.getLineWidth(), stateManager.getLineNumber(),

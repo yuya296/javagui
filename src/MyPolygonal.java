@@ -339,7 +339,7 @@ class PolygonalButton extends JButton {
     StateManager stateManager;
 
     public PolygonalButton(StateManager stateManager) {
-        super("Polygonal");
+        super(new ImageIcon("./img/polygonal.png"));
         addActionListener(new PolygonalListener());
         this.stateManager = stateManager;
     }
@@ -364,6 +364,7 @@ class PolygonalState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
+        stateManager.unSelectAll();
         stateManager.addDrawing(
                 drawing = new MyPolygonal(x, y, 0, 0, stateManager.getLineColor(),
                         stateManager.getFillColor(), stateManager.getLineWidth(), stateManager.getLineNumber(),

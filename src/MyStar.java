@@ -233,7 +233,7 @@ class StarButton extends JButton {
     StateManager stateManager;
 
     public StarButton(StateManager stateManager) {
-        super("Star");
+        super(new ImageIcon("./img/star.png"));
 
         addActionListener(new StarListener());
 

@@ -1,14 +1,16 @@
 // Task2-8
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
 
 /**
  * interface State
  */
 interface State {
-    public void mouseDown(int x, int y);
-    public void mouseUp(int x, int y);
-    public void mouseDrag(int x, int y);
+    void mouseDown(int x, int y);
+    void mouseUp(int x, int y);
+    void mouseDrag(int x, int y);
 }
 
 
@@ -17,31 +19,42 @@ interface State {
  */
 public class StateManager {
     private State state;
-    private MyCanvas canvas;
     private Mediator mediator;
 
-    /* 描画中の図形 drawings : MyDrawing */
-    private MyDrawing drawing;
-    public MyDrawing getDrawing() {
-        return drawing;
+    private boolean shiftKeyPressed = false;  // Shiftキーが押されているか
+
+    void setShiftKeyPressed(boolean shiftKeyPressed) {
+        this.shiftKeyPressed = shiftKeyPressed;
     }
-    public void setDrawing(MyDrawing drawing) {
-        this.drawing = drawing;
+    boolean isShiftKeyPressed() {
+        return shiftKeyPressed;
     }
 
+    private int lineWidth = 1;  // 線の太さ
+    private boolean hasShade = false;   // 影の有無
+    private int lineNumber = 1; // n 重線
+    private Color lineColor = Color.black;
+    private Color fillColor = Color.white;
+    private float[] dashArray = null;
+    private File currentFile;   // 操作中のファイル
+
+    /* コンストラクタ */
+    StateManager(Mediator mediator) {
+        this.mediator = mediator;
+        setState(new SelectState(this));
+    }
 
     /* 線の太さ lineWidth : int */
-    private int lineWidth = 1;  // 線の太さ
     public int getLineWidth() {
         return this.lineWidth;
     }
     public void setLineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
         mediator.setLineWidth(lineWidth);
+        mediator.setDashArray(getDashArray());
     }
 
     /* hasShade : boolean 影の有無 */
-    private boolean hasShade = false;
     public void setShade(boolean hasShade) {
         this.hasShade = hasShade;
         mediator.setShade(hasShade);
@@ -51,7 +64,6 @@ public class StateManager {
     }
 
     /* lineNumber : int n重線 */
-    private int lineNumber = 1; // n 重線
     public int getLineNumber() {
         return lineNumber;
     }
@@ -61,7 +73,6 @@ public class StateManager {
     }
 
     /* lineColor : Color 線の色 */
-    private Color lineColor = Color.black;
     public void setLineColor(Color lineColor) {
         this.lineColor = lineColor;
         mediator.setLineColor(lineColor);
@@ -71,7 +82,6 @@ public class StateManager {
     }
 
     /* fillColor : Color 塗りの色 */
-    private Color fillColor = Color.white;
     public void setFillColor(Color fillColor) {
         this.fillColor = fillColor;
         mediator.setFillColor(fillColor);
@@ -81,7 +91,6 @@ public class StateManager {
     }
 
     /* dashArray : float[] 破線の形状 */
-    private float[] dashArray = null;
     public float[] getDashArray() {
         if (dashArray == null) return dashArray;
 
@@ -91,29 +100,16 @@ public class StateManager {
         return arr;
     }
     public void setDashArray(float[] dashArray) {
+        System.out.println("setDashArray(" + dashArray + ")");
         this.dashArray = dashArray;
-        mediator.setDashArray(dashArray);
+        mediator.setDashArray(getDashArray());
     }
 
-    /* コンストラクタ */
-    public StateManager(MyCanvas canvas) {
-        this.canvas = canvas;
-        this.mediator = canvas.getMediator();
-        setState(new SelectState(this));
-    }
+    // ==========
 
     /* 描画リストにオブジェクトを追加 */
     void addDrawing(MyDrawing d) {
-        MyDrawing oldDrawing = getDrawing();    // 古いDrawing
-        if (oldDrawing != null) {
-            oldDrawing.setSelected(false);
-        }
-
-        canvas.getMediator().addDrawing(d);
-        setDrawing(d);
-        setSelectedDrawing(d);
-        d.setSelected(true);
-        canvas.repaint();   // キャンバスを再描画
+        mediator.addDrawing(d);
     }
 
     /* state をセット */
@@ -134,26 +130,73 @@ public class StateManager {
     }
 
     /* mediator の setSelected() を呼び出す */
-    private MyDrawing selectedDrawing = Mediator.NULL_DRAWING;
-    public void setSelected(int x, int y) {
+    void setSelected(int x, int y) {
         mediator.setSelected(x, y);
     }
-    public void setSelectedDrawing(MyDrawing selectedDrawing) {
-        mediator.setSelectedDrawing(this.selectedDrawing = selectedDrawing);
-    }
-    public MyDrawing getSelectedDrawing() {
-        return (this.selectedDrawing = mediator.getSelectedDrawing());
+
+    MyDrawing getDrawingAt(int x, int y) {
+        return mediator.getDrawingAt(x, y);
     }
 
-    /**
-     *  マウスの挙動
-     */
+    void unSelect(MyDrawing d) {
+        if (isShiftKeyPressed()) mediator.unSelect(d);
+    }
+
+    void unSelectAll() {
+        mediator.unSelectAll();
+    }
+
+    void selectAll() {
+        mediator.selectAll();
+    }
+
+    void setIntersects(Rectangle2D r) {
+        mediator.setIntersects(r);
+    }
+
+
+    // ファイル名の保存
+    public void setCurrentFile(File currentFile) {
+        this.currentFile = currentFile;
+    }
+    public File getCurrentFile() {
+        return currentFile;
+    }
+
+    void open() {
+
+    }
+
+    public void save() {
+        currentFile = mediator.save(currentFile);
+    }
+
+
+//    public void setSelectedDrawing(MyDrawing selectedDrawing) {
+//        mediator.setSelectedDrawings(selectedDrawing);
+//    }
+//    public MyDrawing getSelectedDrawing() {
+//        return (mediator.getSelectedDrawings());
+//    }
+
+    public void removeDrawing(MyDrawing d) {
+        mediator.removeDrawing(d);
+    }
+
+    public void move(int dx, int dy) {
+        mediator.move(dx, dy);
+    }
+    public void move(int dx, int dy, MyDrawing d) {
+        mediator.move(dx, dy, d);
+    }
+
+    /* マウスの挙動 */
     void mouseDown(int x, int y) {
         state.mouseDown(x, y);
     }
     void mouseDrag(int x, int y) {
         state.mouseDrag(x, y);
-        canvas.repaint();
+        mediator.repaint();
     }
     void mouseUp(int x, int y) {
         state.mouseUp(x, y);

@@ -53,7 +53,20 @@ public class MyRectangle extends MyDrawing {
 
     @Override
     protected Shape getShape() {
-        return new Rectangle(getX(), getY(), getW(), getH());
+        int x = getX();
+        int y = getY();
+        int w = getW();
+        int h = getH();
+
+        if (w < 0) {
+            x += w;
+            w *= -1;
+        }
+        if (h < 0) {
+            y += h;
+            h *= -1;
+        }
+        return new Rectangle(x, y, w, h);
     }
 
     public void draw(Graphics g) {
@@ -131,7 +144,7 @@ class RectButton extends JButton {
     private StateManager stateManager;
 
     public RectButton(StateManager stateManager) {
-        super("Rectangle");
+        super(new ImageIcon("./img/rect.png"));
 
         addActionListener(new RectListener());
 
@@ -157,6 +170,7 @@ class RectState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
+        stateManager.unSelectAll();
         stateManager.addDrawing(
                 drawing = new MyRectangle(x, y, 0, 0, stateManager.getLineColor(),
                         stateManager.getFillColor(), stateManager.getLineWidth(), stateManager.getLineNumber(),

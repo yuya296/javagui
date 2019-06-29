@@ -3,10 +3,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PasteButton extends JButton {
-    Mediator mediator;
+    private Mediator mediator;
 
     public PasteButton(Mediator mediator) {
-        super("Paste");
+        super(new ImageIcon("./img/paste.png"));
         addActionListener(new PasteListener());
         this.mediator = mediator;
     }
@@ -14,17 +14,16 @@ public class PasteButton extends JButton {
     class PasteListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            MyDrawing d = mediator.selectedDrawing;
-            mediator.paste(d.getX()/* + 40*/, d.getY()/* + 40*/);
+            mediator.paste();
         }
     }
 }
 
 class CutButton extends JButton {
-    Mediator mediator;
+    private Mediator mediator;
 
     public CutButton(Mediator mediator) {
-        super("Cut");
+        super(new ImageIcon("./img/cut.png"));
         addActionListener(new CutListener());
         this.mediator = mediator;
     }
@@ -38,10 +37,10 @@ class CutButton extends JButton {
 }
 
 class CopyButton extends JButton {
-    Mediator mediator;
+    private Mediator mediator;
 
     public CopyButton(Mediator mediator) {
-        super("Copy");
+        super(new ImageIcon("./img/copy.png"));
         addActionListener(new CopyListener());
         this.mediator = mediator;
     }
@@ -55,10 +54,10 @@ class CopyButton extends JButton {
 }
 
 class DeleteButton extends JButton {
-    Mediator mediator;
+    private Mediator mediator;
 
     public DeleteButton(Mediator mediator) {
-        super("Delete");
+        super(new ImageIcon("./img/delete.png"));
         addActionListener(new CopyListener());
         this.mediator = mediator;
     }
@@ -66,7 +65,7 @@ class DeleteButton extends JButton {
     class CopyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            mediator.removeDrawing();
+            mediator.removeSelectedDrawing();
         }
     }
 }

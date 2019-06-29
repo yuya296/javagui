@@ -2,8 +2,9 @@
 
 import java.awt.*;
 import java.awt.geom.Area;
+import java.io.Serializable;
 
-public class MyDrawing {
+public class MyDrawing implements Serializable {
 
     // 位置、サイズ
     private int x, y, w, h;
@@ -12,9 +13,13 @@ public class MyDrawing {
     private int lineWidth;      // 線の太さ
     private int lineNumber = 3; // n 重線
     private float[] dashArray = null;
+    private boolean hasShade;   //
+    private boolean isSelected; // 選択されているか
 
     private Color fillColor;    // 図形の塗り色
-    final int SIZE = 7; // 選択表示矩形に付く四角形の大きさ
+    int SIZE() {
+        return 7;
+    }       // 選択表示矩形に付く四角形の大きさ
     Shape region;
 
 
@@ -72,6 +77,7 @@ public class MyDrawing {
 
             Graphics2D g2 = (Graphics2D) g;
 
+            int SIZE = SIZE();
             g2.setStroke(new BasicStroke());
             g2.setColor(Color.GREEN);
             g2.fillRect(bx+bw/2-SIZE/2,by-SIZE/2,       SIZE, SIZE);
@@ -121,7 +127,6 @@ public class MyDrawing {
     public void setSize(int w, int h) {
         this.w = w;
         this.h = h;
-//        setRegion();
     }
     public int getW() {
         return this.w;
@@ -171,7 +176,6 @@ public class MyDrawing {
     }
 
     // 影
-    private boolean hasShade;
     public boolean hasShade() {
         return hasShade;
     }
@@ -180,7 +184,6 @@ public class MyDrawing {
     }
 
     // 選択されているか : isSelected
-    private boolean isSelected;
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
@@ -193,6 +196,5 @@ public class MyDrawing {
         setRegion();
         return region.contains(x, y);
     }
-
     public void setRegion() {}
 }
