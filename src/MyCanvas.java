@@ -23,7 +23,7 @@ public class MyCanvas extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
-        for (MyDrawing d : mediator.getDrawings()) d.draw(g);
+        for (MyDrawing d : mediator.getDrawingList()) d.draw(g);
     }
 
 }

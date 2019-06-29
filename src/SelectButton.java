@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SelectButton extends JButton {
+    // TODO マウスオーバーで注釈
     private StateManager stateManager;
 
     public SelectButton(StateManager stateManager) {
@@ -154,15 +155,13 @@ class NoObjectClickedState extends SelectStateAdapter {
         // Shiftキーが押されていないなら, 全ての選択を外す
         if (!stateManager.isShiftKeyPressed()) {
             stateManager.unSelectAll();
-            System.out.println("unSelectedAll");
         }
 
-        selectBox = new MyRectangle(x, y, 0, 0, lineColor, fillColor, 1, 1, null, false) {
-            @Override
-            int SIZE() {
-                return 0;
-            }
-        };
+        // MyRectangle のバウンディングボックスの四角を除いた匿名クラス
+        selectBox = new MyRectangle(x, y, 0, 0, lineColor, fillColor, 1, 1, null, false)
+                    .setDecoOfBound(0)  // バウンディングボックスを非表示
+                    .setValid(false);   // 実在しない
+
         stateManager.addDrawing(selectBox);
     }
 
@@ -174,9 +173,11 @@ class NoObjectClickedState extends SelectStateAdapter {
 
     @Override
     public void mouseUp(int x, int y) {
+        // TODO バグ修正
+        // saveがキャンセルされたとき、NoObjectClickedStateがセットされたまま
+        // かつmouseUp()が呼ばれておらずselectBoxが非表示になっていない状態 でバグが発生
         super.mouseUp(x, y);
         stateManager.removeDrawing(selectBox);
         stateManager.setIntersects(selectBox.getShape().getBounds());
-
     }
 }

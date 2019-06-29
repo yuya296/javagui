@@ -259,6 +259,7 @@ class StarState implements State {
 
     @Override
     public void mouseDown(int x, int y) {
+        stateManager.unSelectAll();
         stateManager.addDrawing(
                 drawing = new MyStar(x, y, 0, 0, stateManager.getLineColor(),
                         stateManager.getFillColor(), stateManager.getLineWidth(), stateManager.getLineNumber(),

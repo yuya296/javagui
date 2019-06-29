@@ -18,14 +18,22 @@ public class Mediator {
         buffers = new ArrayList<>();
     }
 
-    public List<MyDrawing> getDrawings() {
+    /* 描画対象オブジェクトのリストを返す*/
+    public List<MyDrawing> getDrawingList() {
         return drawings;
+    }
+
+    /* 有効(選択,コピペ,保存可)なオブジェクトのリストを返す */
+    public List<MyDrawing> getValidList() {
+        List<MyDrawing> res = new ArrayList<>();
+        for (MyDrawing d : drawings) if (d.isValid()) res.add(d);
+        return res;
     }
 
     /* 新たな図形を描画 */
     public void addDrawing(MyDrawing d) {
         drawings.add(d);    // 描画リストに追加
-        select(d);          // 選択状態にする
+        if (d.isValid()) select(d);          // 選択状態にする
         repaint();          // 再描画
     }
 
@@ -41,7 +49,6 @@ public class Mediator {
     void removeSelectedDrawing() {
         removeDrawings(selectedDrawings);
     }
-
 
     /* 選択 */
     void select(MyDrawing drawing) {
@@ -65,8 +72,11 @@ public class Mediator {
     }
     /* 全て選択解除 */
     void unSelectAll() {
+        System.out.println("> size = " + selectedDrawings.size());
         for (MyDrawing d : selectedDrawings) d.setSelected(false);
         selectedDrawings.clear();
+        System.out.println("> clear");
+        System.out.println("> size = " + selectedDrawings.size());
         repaint();
     }
 
@@ -89,40 +99,42 @@ public class Mediator {
     }
 
     /* バッファを消去 */
-    void clearBuffer() {
+    private void clearBuffer() {
         buffers.clear();
     }
 
     /* コピー */
-    public boolean copy() {
+    void copy() {
         clearBuffer();
         try {
-            for (MyDrawing d : selectedDrawings) buffers.add(d.clone());
-        } catch (CloneNotSupportedException e) { return false; }
-        return true;
+            for (MyDrawing d : selectedDrawings)
+                if (d.isValid()) buffers.add(d.clone());    // 実在するオブジェクトをバッファにコピー
+        } catch (CloneNotSupportedException e) {
+            System.out.println("CloneNotSupportedException");
+        }
     }
     /* カット */
-    boolean cut() {
-        boolean b = copy();
+    void cut() {
+        copy();
         removeDrawings(selectedDrawings);
-        return b;
     }
     /* ペースト */
-    boolean paste() {
+    void paste() {
         unSelectAll();
         try {
             for (MyDrawing d : buffers) {
                 d.move(20, 20); // 移動
                 addDrawing(d.clone());   // 複製して描画リストに追加
             }
-        } catch (CloneNotSupportedException e) { return false; }
+        } catch (CloneNotSupportedException e) {
+            System.out.println("CloneNotSupportedException");
+        }
         repaint();
-        return true;
     }
 
 
     /* 選択範囲に含まれている図形の選択状態を切り替える */
-    public void setIntersects(Rectangle2D r) {
+    void setIntersects(Rectangle2D r) {
         for (MyDrawing d : drawings) {
             if (d.region.intersects(r)) {
                 switchSelected(d);
@@ -131,14 +143,14 @@ public class Mediator {
     }
 
     /* 選択状態を切り替える */
-    public void switchSelected(MyDrawing d) {
+    private void switchSelected(MyDrawing d) {
         if (d.isSelected()) unSelect(d);
         else select(d);
     }
 
 
     /* 再描画 */
-    public void repaint() {
+    void repaint() {
         canvas.repaint();
     }
 
@@ -190,7 +202,7 @@ public class Mediator {
 
 
     // 開く
-    public void open() {
+    void open() {
         JFileChooser fc = new JFileChooser(".");
         int returnVal = fc.showOpenDialog(canvas);
         if (returnVal != JFileChooser.APPROVE_OPTION) return;   // キャンセル
@@ -201,6 +213,7 @@ public class Mediator {
             ObjectInputStream in = new ObjectInputStream(fin);
 
             drawings = (ArrayList<MyDrawing>) in.readObject();
+            selectedDrawings = (ArrayList<MyDrawing>) in.readObject();
             fin.close();
         } catch (Exception e) {
             System.out.println("Failed to open.");
@@ -210,21 +223,7 @@ public class Mediator {
     }
 
     // 保存
-    public void save(String path) {
-        try {
-            FileOutputStream fout = new FileOutputStream(path);
-            ObjectOutputStream out = new ObjectOutputStream(fout);
-
-            out.writeObject(drawings);
-            out.flush();
-            fout.close();
-
-        } catch (Exception e) {
-            System.out.println("Failed to open \"" + path + "\"");
-        }
-    }
-
-    public File save(File input) {
+    File save(File input) {
         File file;
         if ((file = input) == null){
             JFileChooser fc = new JFileChooser(".");
@@ -238,7 +237,8 @@ public class Mediator {
             FileOutputStream fout = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fout);
 
-            out.writeObject(drawings);
+            out.writeObject(getValidList());
+            out.writeObject(selectedDrawings);
             out.flush();
             fout.close();
         } catch (Exception e) {

@@ -17,11 +17,10 @@ public class MyDrawing implements Serializable {
     private boolean isSelected; // 選択されているか
 
     private Color fillColor;    // 図形の塗り色
-    int SIZE() {
-        return 7;
-    }       // 選択表示矩形に付く四角形の大きさ
+    private int decoOfBound = 7;    // 選択表示矩形に付く四角形の大きさ
     Shape region;
 
+    private boolean isValid = true;
 
     // Constructor
     public MyDrawing(int x, int y, int w, int h, Color lineColor, Color fillColor, int lineWidth, int lineNumber, float[] dashArray, boolean hasShade) {
@@ -77,7 +76,7 @@ public class MyDrawing implements Serializable {
 
             Graphics2D g2 = (Graphics2D) g;
 
-            int SIZE = SIZE();
+            int SIZE = decoOfBound;
             g2.setStroke(new BasicStroke());
             g2.setColor(Color.GREEN);
             g2.fillRect(bx+bw/2-SIZE/2,by-SIZE/2,       SIZE, SIZE);
@@ -197,4 +196,19 @@ public class MyDrawing implements Serializable {
         return region.contains(x, y);
     }
     public void setRegion() {}
+
+    // このDrawingは実在するか（コピペ、保存が可能か）
+    public MyDrawing setValid(boolean valid) {
+        isValid = valid;
+        return this;
+    }
+    public boolean isValid() {
+        return isValid;
+    }
+
+    // バウンディングボックスの装飾のサイズ
+    public MyDrawing setDecoOfBound(int decoOfBound) {
+        this.decoOfBound = decoOfBound;
+        return this;
+    }
 }

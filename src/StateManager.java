@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 
-/**
- * interface State
- */
+/* interface State */
 interface State {
     void mouseDown(int x, int y);
     void mouseUp(int x, int y);
@@ -14,9 +12,7 @@ interface State {
 }
 
 
-/**
- * class StateManager
- */
+/* class StateManager */
 public class StateManager {
     private State state;
     private Mediator mediator;
@@ -154,7 +150,6 @@ public class StateManager {
         mediator.setIntersects(r);
     }
 
-
     // ファイル名の保存
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
@@ -171,13 +166,6 @@ public class StateManager {
         currentFile = mediator.save(currentFile);
     }
 
-
-//    public void setSelectedDrawing(MyDrawing selectedDrawing) {
-//        mediator.setSelectedDrawings(selectedDrawing);
-//    }
-//    public MyDrawing getSelectedDrawing() {
-//        return (mediator.getSelectedDrawings());
-//    }
 
     public void removeDrawing(MyDrawing d) {
         mediator.removeDrawing(d);
